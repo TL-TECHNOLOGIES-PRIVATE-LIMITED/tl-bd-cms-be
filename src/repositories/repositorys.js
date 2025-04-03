@@ -1,3 +1,4 @@
+import fetchReport from "../helpers/analytics.js";
 import prisma from "../helpers/prisma.js"
 import { v4 as uuidv4 } from 'uuid';
 
@@ -490,6 +491,215 @@ class Repositorys {
       }
     })
   }
+
+  /**
+     * Fetch active users data
+     * @param {Object} dateRange - Date range for analytics
+     * @returns {Promise<Array>} Active users data
+     */
+  async fetchActiveUsers(dateRange) {
+    try {
+        const result = await fetchReport(
+            [{ name: 'activeUsers' }],
+            [],
+            dateRange
+        );
+
+        return result.map(item => ({
+            activeUsers: item.activeUsers,
+            date: item.date
+        }));
+    } catch (error) {
+        console.error('Error fetching active users:', error);
+        throw error;
+    }
+}
+
+/**
+ * Fetch engaged sessions data
+ * @param {Object} dateRange - Date range for analytics
+ * @returns {Promise<Array>} Engaged sessions data
+ */
+async fetchEngagedSessions(dateRange) {
+    try {
+        const result = await fetchReport(
+            [{ name: 'engagedSessions' }],
+            [],
+            dateRange
+        );
+
+        return result.map(item => ({
+            engagedSessions: item.engagedSessions,
+            date: item.date
+        }));
+    } catch (error) {
+        console.error('Error fetching engaged sessions:', error);
+        throw error;
+    }
+}
+
+/**
+ * Fetch city-wise stats
+ * @param {Object} dateRange - Date range for analytics
+ * @returns {Promise<Array>} City statistics
+ */
+async fetchCityStats(dateRange) {
+    try {
+        const result = await fetchReport(
+            [{ name: 'activeUsers' }],
+            [{ name: 'city' }],
+            dateRange
+        );
+
+        return result.map(item => ({
+            city: item.city,
+            activeUsers: item.activeUsers
+        }));
+    } catch (error) {
+        console.error('Error fetching city stats:', error);
+        throw error;
+    }
+}
+
+/**
+ * Fetch page views data
+ * @param {Object} dateRange - Date range for analytics
+ * @returns {Promise<Array>} Page views data
+ */
+async fetchPageViews(dateRange) {
+    try {
+        const result = await fetchReport(
+            [{ name: 'screenPageViews' }],
+            [],
+            dateRange
+        );
+
+        return result.map(item => ({
+            screenPageViews: item.screenPageViews,
+            date: item.date
+        }));
+    } catch (error) {
+        console.error('Error fetching page views:', error);
+        throw error;
+    }
+}
+
+/**
+ * Fetch bounce rate data
+ * @param {Object} dateRange - Date range for analytics
+ * @returns {Promise<Array>} Bounce rate data
+ */
+async fetchBounceRate(dateRange) {
+    try {
+        const result = await fetchReport(
+            [{ name: 'bounceRate' }],
+            [],
+            dateRange
+        );
+
+        return result.map(item => ({
+            bounceRate: item.bounceRate,
+            date: item.date
+        }));
+    } catch (error) {
+        console.error('Error fetching bounce rate:', error);
+        throw error;
+    }
+}
+
+/**
+ * Fetch page views by page
+ * @param {Object} dateRange - Date range for analytics
+ * @returns {Promise<Array>} Page views by page data
+ */
+async fetchPageViewsByPage(dateRange) {
+    try {
+        const result = await fetchReport(
+            [{ name: 'screenPageViews' }],
+            [{ name: 'pagePath' }],
+            dateRange
+        );
+
+        return result.map(item => ({
+            pagePath: item.pagePath,
+            screenPageViews: item.screenPageViews
+        }));
+    } catch (error) {
+        console.error('Error fetching page views by page:', error);
+        throw error;
+    }
+}
+
+/**
+ * Fetch traffic sources data
+ * @param {Object} dateRange - Date range for analytics
+ * @returns {Promise<Array>} Traffic sources data
+ */
+async fetchTrafficSources(dateRange) {
+    try {
+        const result = await fetchReport(
+            [
+                { name: 'sessions' },
+                { name: 'totalUsers' }
+            ],
+            [
+                { name: 'sessionDefaultChannelGroup' }
+            ],
+            dateRange
+        );
+
+        return result;
+    } catch (error) {
+        console.error('Error fetching traffic sources:', error);
+        throw error;
+    }
+}
+
+/**
+ * Fetch session duration data
+ * @param {Object} dateRange - Date range for analytics
+ * @returns {Promise<Array>} Session duration data
+ */
+async fetchSessionDuration(dateRange) {
+    try {
+        const result = await fetchReport(
+            [{ name: 'averageSessionDuration' }],
+            [{ name: 'sessionSourceMedium' }],
+            dateRange
+        );
+
+        return result;
+    } catch (error) {
+        console.error('Error fetching session duration:', error);
+        throw error;
+    }
+}
+
+/**
+ * Get total enquiries count
+ * @returns {Promise<number>} Total number of enquiries
+ */
+async getTotalEnquiriesCount() {
+    try {
+        return await prisma.enquiry.count();
+    } catch (error) {
+        console.error('Error counting enquiries:', error);
+        throw error;
+    }
+}
+
+/**
+ * Get total newsletter subscribers count
+ * @returns {Promise<number>} Total number of newsletter subscribers
+ */
+async getTotalNewsletterSubscribers() {
+    try {
+        return await prisma.newsletter.count();
+    } catch (error) {
+        console.error('Error counting newsletter subscribers:', error);
+        throw error;
+    }
+}
 
 
 }
